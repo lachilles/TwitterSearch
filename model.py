@@ -1,15 +1,9 @@
 """Models and database functions for Udemy project"""
 
-from datetime import datetime, timedelta, tzinfo
-from pytz import timezone, utc
-
-import requests
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import func
-
-from delorean import Delorean
-from stemming.porter2 import stem
+from api import get_tweets_by_api
+import re
 
 # This is the connection to the PostgreSQL database; we're getting this through
 # the Flask-SQLAlchemy helper library. On this, we can find the `session`
@@ -27,7 +21,7 @@ class TwitterUser(db.Model):
     __tablename__ = "users"
 
     user_id = db.Column(db.BigInteger, primary_key=True)
-    user = user = db.Column(db.String(64), nullable=False)  #user.screen_name
+    handle = db.Column(db.String(64), nullable=False)  #user.screen_name
     user_name = db.Column(db.String(60), nullable=False)  #user.name
     user_location = db.Column(db.String(160), nullable=True)
     follower_count = db.Column(db.Integer, nullable=True)
@@ -39,14 +33,14 @@ class TwitterUser(db.Model):
     def __repr__(self):
         """Represents user object"""
 
-        return "<User ID: %d, Name: %s>" % (self.user_id, self.user, self.user_name)
+        return "<User ID: %d, Name: %s>" % (self.user_id, self.handle, self.user_name)
 
     def as_dict(self):
         """Returns object in dictionary format"""
 
         data = {
             'name': self.user_name,
-            'handle': self.user,
+            'handle': self.handle,
             'follower_count': self.follower_count,
             'user_id': self.user_id
         }
@@ -61,18 +55,18 @@ class Tweet(db.Model):
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     tweet_id = db.Column(db.BigInteger, nullable=False)  #id
-    tweet_id_str = db.Column(db.String(64), nullable=True) #id_str
-    user_id = db.Column(db.BigInteger, db.ForecignKey("users.user_id"), nullable=False)
+    tweet_id_str = db.Column(db.String(64), nullable=True)  #id_str
+    user_id = db.Column(db.BigInteger, db.ForeignKey("users.user_id"), nullable=False)
     user = db.Column(db.String(64), nullable=False)  #user.screen_name
     created_at = db.Column(db.DateTime, nullable=False)  #created_at
     text = db.Column(db.String(240), nullable=False)  #text
     retweet_count = db.Column(db.Integer, nullable=True)  #retweet_count
-    favorite_count = db.Column(db.Integer, nullable=True) #favorite_count
-    hashtags = db.Column(db.String(240), nullable=True)
+    favorite_count = db.Column(db.Integer, nullable=True)  #favorite_count
+    hashtags = db.Column(db.String(240), nullable=True)  #hashtags
     pulled_at = db.Column(db.DateTime, nullable=False)
 
     user = db.relationship('TwitterUser')
-    keyword = db.relationship('Keyword')
+    keywordmap = db.relationship('KeywordMap')
 
     def __repr(self):
         """Represens tweet object"""
@@ -83,63 +77,44 @@ class Tweet(db.Model):
         """Returns dictionary format of tweet"""
 
         tweet = {
-            'created_at': format_time(self.created_at),
-            'user': self.user.screen_name,
+            'created_at': self.created_at,
+            'handle': self.user.screen_name,
             'user_id': self.user_id,
             'tweet_id': self.tweet_id,
             'text': self.text,
             'favorites': self.favorite_count,
-            'retweet_count': self.retweet_count,
+            'hashtags': self.hashtags,
         }
 
         return tweet
 
-    @classmethod
-    def recent_tweets_by_keyword(cls, keyword, amount=15):
-        """Returns the most recent tweets for a query string"""
-
-        recent_tweets_list = cls.query.filter(cls.keyword == keyword).order_by(cls.created_at.desc()).limit(amount).all()
-
-        recent_tweets = [tweet.as_dict() for tweet in recent_tweets_list]
-
-        return recent_tweets
-
     @staticmethod
     def normalize_input(keyword):
-        """Given a query string, searches tweets"""
+        """Preprocess input"""
+        # Convert to lower case
+        keyword = keyword.lower()
+        # Remove additional white spaces
+        keyword = re.sub('[\s]+', ' ', keyword)
 
-        # add hashtag of entire phrase
-        keywords = ["#" + keyword.replace(" ", '')]
-
-        # add each word of the phrase
-        words = keyword.lower().split(" ")
-        keywords.extend(words)
-
-        # check stem of each word (i.e. immigrants -> immigrant)
-        stems = [stem(word) for word in keywords]
-        keywords.extend(stems)
-
-        return keywords
+        return keyword
 
     @classmethod
-    def search_tweets(cls, keyword):
+    def get_tweets(self, keyword):
         """Given a keyword searches tweets"""
 
-        keywords = cls.normalize_input(keyword)
+        keyword = self.normalize_input(keyword)
 
-    # check if any tweets match the tokenized keywords, prioritizing tweets with more matching keywords
-
-    search_query = db.session.query(Keyword.tweet_id, func.count(Keyword.keyword))
+        return get_tweets_by_api(self.keyword)
 
 
-class Keyword(db.Model):
+class KeywordMap(db.Model):
     """Keywords found in tweets"""
 
-    __tablename__ = "keyword"
+    __tablename__ = "keywordmap"
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     keyword = db.Column(db.String(140), nullable=False)
-    last_searched db.Column(db.DateTime, nullable=False)
+    last_searched = db.Column(db.DateTime, nullable=False)
     tweet_id = db.Column(db.Integer, db.ForeignKey("tweets.id"), nullable=False)
 
     tweet = db.relationship('Tweet')
@@ -148,45 +123,35 @@ class Keyword(db.Model):
 #Creates test database
 
 
-def example_data():
-    """Create some sample data."""
+# def example_data():
+#     """Create some sample data."""
 
-    brexit = Tweet()
+#     brexit = Tweet()
 
-    trump = Tweet()
+#     trump = Tweet()
 
-    jeopardy = Tweet()
+#     jeopardy = Tweet()
 
-    db.session.add_all([brexit, trump, jeopardy])
-    db.session.commit()
+#     db.session.add_all([brexit, trump, jeopardy])
+#     db.session.commit()
 
 ##############################################################################
 # Helper functions
 
 
-def connect_to_db(app, db_uri=None):
+def connect_to_db(app):
     """Connect the database to our Flask app."""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri or 'postgresql:///twitter'
-
+    # Configure to use our PstgreSQL database
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///twitter'
     db.app = app
     db.init_app(app)
 
-    print "Connected to DB."
-
-
-def format_time(datetime):
-    """Formats datetime objects for user-friendliness"""
-
-    d = Delorean(datetime, timezone='UTC')
-
-    return d.humanize()
-
 
 if __name__ == "__main__":
+    # As a convenience, if we run this module interactively, it will leave
+    # you in a state of being able to work with the database directly.
 
     from server import app
-
     connect_to_db(app)
-
-    db.create_all()
+    print "Connected to DB."
