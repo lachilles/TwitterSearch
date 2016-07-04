@@ -27,9 +27,9 @@ def verify_twitter_creds():
     print api.VerifyCredentials()
 
 
-def get_tweets_by_api(keyword='brexit', count=30, since_id=None):
+def get_tweets_by_api(term='brexit', count=30, since_id=None):
     """Return 30 of the most recent tweets on a keyword"""
-
+    keyword = term
     #Request data
     tweets = api.GetSearch(term=keyword, count=count, lang='en', since_id=since_id)
 

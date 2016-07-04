@@ -29,19 +29,19 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/trending", methods=['POST'])
+@app.route("/trending")
 def add_trending():
     """Add a trending keyword to our database."""
-    KEYWORD = request.form.get('search').lower()
+    KEYWORD = request.args.get('search').lower()
     # add a keyword to our KeywordMap here
 
     print "\n\nTRENDING: %s\n\n" % (KEYWORD)
 
 
-@app.route('/new-search', methods=['POST'])
+@app.route('/new-search')
 def get_search_results():
     """Get Twitter search results"""
-    KEYWORD = request.form.get('search').lower()
+    KEYWORD = request.args.get('search').lower()
 
     print "\n\Search results: %s\n\n" % (KEYWORD)
 
@@ -50,7 +50,7 @@ def get_search_results():
 def search_results():
     """Search Twitter and return a dictionary of results."""
 
-    keyword = request.form.get('search').lower()
+    keyword = request.args.get('search').lower()
     tweets = keyword.get_tweets()
 
     result = []
