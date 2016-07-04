@@ -26,7 +26,7 @@ class TwitterUser(db.Model):
     user_location = db.Column(db.String(160), nullable=True)
     follower_count = db.Column(db.Integer, nullable=True)
     tweet_count = db.Column(db.Integer, nullable=True)
-    verified_status = db.Column(db.String(10), nullable=False)
+    verified_status = db.Column(db.String(10), nullable=True)
 
     tweets = db.relationship('Tweet')
 
@@ -57,7 +57,7 @@ class Tweet(db.Model):
     tweet_id = db.Column(db.BigInteger, nullable=False)  #id
     tweet_id_str = db.Column(db.String(64), nullable=True)  #id_str
     user_id = db.Column(db.BigInteger, db.ForeignKey("users.user_id"), nullable=False)
-    user = db.Column(db.String(64), nullable=False)  #user.screen_name
+    handle = db.Column(db.String(64), nullable=False)  #user.screen_name
     created_at = db.Column(db.DateTime, nullable=False)  #created_at
     text = db.Column(db.String(240), nullable=False)  #text
     retweet_count = db.Column(db.Integer, nullable=True)  #retweet_count

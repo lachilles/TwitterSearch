@@ -21,20 +21,6 @@ app.secret_key = "ABC"
 # This is horrible. Fix this so that, instead, it raises an error.
 app.jinja_env.undefined = StrictUndefined
 
-KEYWORD = [
-    'brexit',
-    'Dhaka',
-    '#WhyIMissBeingALittleKid'
-    '#NYCFC'
-    '#Baghdad'
-    'Tyler Johnson'
-    '#GrowingUpOnLongIsland'
-    '#TakeAMovieToSpace'
-    '#happyfourthweekend'
-    '#SundayMorning'
-    ]
-
-
 @app.route("/")
 def index():
     """Homepage showing a search form"""
@@ -65,7 +51,7 @@ def search_results():
     """Search Twitter and return a dictionary of results."""
 
     keyword = request.form.get('search').lower()
-    tweets = keyword.get_tweets(keyword)
+    tweets = keyword.get_tweets()
 
     result = []
 
@@ -91,6 +77,7 @@ def search_results():
     #sort dictionary by datetime
     sorted_result = sorted(result, key=lambda k: k['datetime'])
     tweets = json.dumps(sorted_result)
+
     return tweets
 
 
