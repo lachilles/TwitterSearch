@@ -6,11 +6,12 @@ from flask import Flask, render_template, redirect, request, flash, session, jso
 from flask_debugtoolbar import DebugToolbarExtension
 import json
 from sqlalchemy import func
-from model import KeywordMap, Tweet, TwitterUser, connect_to_db
+# from model import KeywordMap, Tweet, TwitterUser, connect_to_db
+from api import get_tweets_by_api
 import unicodedata
 import moment
 import time
-import random
+# import random
 
 app = Flask(__name__)
 
@@ -20,6 +21,7 @@ app.secret_key = "ABC"
 # Normally, if you use an undefined variable in Jinja2, it fails silently.
 # This is horrible. Fix this so that, instead, it raises an error.
 app.jinja_env.undefined = StrictUndefined
+
 
 @app.route("/")
 def index():
@@ -32,26 +34,23 @@ def index():
 @app.route("/trending")
 def add_trending():
     """Add a trending keyword to our database."""
-    KEYWORD = request.args.get('search').lower()
+    keyword = request.args.get('search').lower()
     # add a keyword to our KeywordMap here
 
-    print "\n\nTRENDING: %s\n\n" % (KEYWORD)
+    print "\n\nTRENDING: %s\n\n" % (keyword)
 
 
-@app.route('/new-search')
-def get_search_results():
-    """Get Twitter search results"""
-    KEYWORD = request.args.get('search').lower()
-
-    print "\n\Search results: %s\n\n" % (KEYWORD)
-
-
-@app.route('/search-results.json/')
-def search_results():
+@app.route('/search-results.json/<keyword>')
+def search_results(keyword):
     """Search Twitter and return a dictionary of results."""
 
     keyword = request.args.get('search').lower()
-    tweets = keyword.get_tweets()
+
+    if keyword is None:
+        default_term = 'brexit'
+        tweets = get_tweets_by_api(term=default_term)
+    else:
+        tweets = get_tweets_by_api(term=keyword)
 
     result = []
 
@@ -88,7 +87,7 @@ if __name__ == "__main__":
 # that we invoke the DebugToolbarExtension
     app.debug = True
 
-    connect_to_db(app)
+    # connect_to_db(app)
 
     # Use the DebugToolbars
     DebugToolbarExtension(app)

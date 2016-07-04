@@ -5,7 +5,7 @@
 
 <!-- Content here -->
 <p>See what's happening <b>right now</b></p>
-<form class ="navbar-form cent" method="post" action="/new-search" id="search-box">
+<form class ="navbar-form cent" action="/search-results.json/" id="search-box">
 
         <div class="input-group">
         <input type="text" class="form-control" placeholder="Search" name="search" id="search">
@@ -16,5 +16,19 @@
     </form>
 
   <script src="/static/js/submit-search.js"></script>
+
+<div id="tweet_data">
+<table class="table table-striped">
+{% for tweet in tweets %}
+    <tr>
+        <td>{{ tweet.datetime }}</td>
+        <td>{{ tweet.user.screen_name }}</td>
+        <td>{{ tweet.text }}</td>
+        <td>{{ tweet.favorite_count }}</td>
+    </tr>
+</table>
+</div>
+
+{% endfor %}
 
 {% endblock %}
