@@ -26,9 +26,11 @@ app.jinja_env.undefined = StrictUndefined
 @app.route("/")
 def index():
     """Homepage showing a search form"""
-    # KEYWORD = request.args.get("search").lower()
 
-    return render_template("index.html")
+    default_term = 'brexit'
+    tweets = get_tweets_by_api(term=default_term)
+
+    return render_template("index.html", tweets=tweets)
 
 
 @app.route("/trending")
@@ -46,11 +48,7 @@ def search_results(keyword):
 
     keyword = request.args.get('search').lower()
 
-    if keyword is None:
-        default_term = 'brexit'
-        tweets = get_tweets_by_api(term=default_term)
-    else:
-        tweets = get_tweets_by_api(term=keyword)
+    tweets = get_tweets_by_api(term=keyword)
 
     result = []
 
@@ -71,7 +69,7 @@ def search_results(keyword):
             created_at_str = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(created_at, '%a %b %d %H:%M:%S +0000 %Y'))
             # create a moment from the string
             created_at = moment.date(created_at_str, 'YYYY-MM-DD HH:mm:ss')
-            result.append({'datetime': created_at_str, 'text': text, 'user': user,
+            result.append({'created_at': created_at_str, 'text': text, 'user': user,
                            'favorite_count': favorite_count, 'hashtags': hashtags})
     #sort dictionary by datetime
     sorted_result = sorted(result, key=lambda k: k['datetime'])

@@ -21,7 +21,7 @@
 <table class="table table-striped">
 {% for tweet in tweets %}
     <tr>
-        <td>{{ tweet.datetime }}</td>
+        <td>{{ tweet.created_at }}</td>
         <td>{{ tweet.user.screen_name }}</td>
         <td>{{ tweet.text }}</td>
         <td>{{ tweet.favorite_count }}</td>
