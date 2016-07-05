@@ -105,27 +105,37 @@ def search_results(keyword):
             tweet_id = tweet.id
             text = unicodedata.normalize('NFKD', tweet.text).encode('ascii', 'ignore')
             # Find URL in text and bind to url
+            # url = re.search('((?:http|https)(?::\\/{2}[\\w]+)(?:[\\/|\\.]?)(?:[^\\s"]*))', text)
             url = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', text)
             # Remove URL from text
-            text = re.sub(r'^https?:\/\/.*[\r\n]*', '', text, flags=re.MULTILINE)
+            text_wo_url = re.sub(r'^https?:\/\/.*[\r\n]*', '', text, flags=re.MULTILINE)
             # Handle / Name
             user = unicodedata.normalize('NFKD', tweet.user.screen_name).encode('ascii', 'ignore')
             # Count of favorites
-            favorite_count = unicodedata.normalize('NFKD', tweet.favorite_count).encode('ascii', 'ignore')
-            # Hashtags
-            hashtags = unicodedata.normalize('NFKD', tweet.hashtags).encode('ascii', 'ignore')
+            favorite_count = tweet.favorite_count
+            #Return dictionary of hashtags with hashtag as key and number of occurances as value
+            if tweet.hashtags:
+                # Convert hashtags from unicode to string
+                ht_list = []
+                for hashtag in tweet.hashtags:
+                    ht_str = unicodedata.normalize('NFKD', hashtag.text).encode('ascii', 'ignore')
+                    ht_list.append(ht_str)
+                hashtags = Counter(ht_list)
+            else:
+                hashtags = tweet.hashtags
             # Convert tweet from unicode to datetime
-            created_at = unicodedata.normalize('NFKD', tweet.created_at).encode('ascii', 'ignore')
+            created_at = tweet.created_at
             # format created_at string to ISO 8610
             created_at_str = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(created_at, '%a %b %d %H:%M:%S +0000 %Y'))
             # create a moment from the string
             created_at = moment.date(created_at_str, 'YYYY-MM-DD HH:mm:ss')
-            result.append({'created_at': created_at_str, 'text': text, 'user': user,
+            result.append({'created_at': created_at_str, 'text': text_wo_url, 'user': user,
                            'favorite_count': favorite_count, 'hashtags': hashtags,
                            'url': url, 'tweet_id': tweet_id})
+
     #sort dictionary by datetime
     sorted_result = sorted(result, key=lambda k: k['created_at'])
-    tweets = json.dump(sorted_result)
+    tweets = json.dumps(sorted_result)
     print tweets
     return tweets
 
