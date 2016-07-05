@@ -41,16 +41,18 @@ def index():
 #     print "\n\nTRENDING: %s\n\n" % (keyword)
 
 
-@app.route('/search-results.json', methods=["GET"])
-def search_results():
+@app.route('/search-results.json', methods=["POST"])
+def show_search_results():
     """Search Twitter and return a dictionary of results."""
-    keyword = request.args.get('search').lower()
-    print "**********************"
-    print keyword
-    print "**********************"
-    tweets = get_tweets_by_api(term=keyword)
 
-    result = []
+    #Get values from search-box via AJAX
+    current_keyword = request.form.get('search').lower()
+    print "**********************"
+    print current_keyword
+    print "**********************"
+    tweets = get_tweets_by_api(term=current_keyword)
+
+    # result = []
 
     for tweet in tweets:
         # Exclude retweets since they appear as duplicatses to endu ser
@@ -83,19 +85,16 @@ def search_results():
             created_at_str = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(created_at, '%a %b %d %H:%M:%S +0000 %Y'))
             # create a moment from the string
             created_at = moment.date(created_at_str, 'YYYY-MM-DD HH:mm:ss')
-            result.append({'created_at': created_at_str, 'text': text_wo_url, 'user': user,
-                           'favorite_count': favorite_count, 'hashtags': hashtags,
-                           'url': url, 'tweet_id': tweet_id})
+            # result.append({'created_at': created_at_str, 'text': text_wo_url, 'user': user,
+                           # 'favorite_count': favorite_count, 'hashtags': hashtags,
+                           # 'url': url, 'tweet_id': tweet_id})
 
-    #sort dictionary by datetime
-    sorted_result = sorted(result, key=lambda k: k['created_at'])
-    tweets = json.dumps(sorted_result)
-    print tweets
-    return tweets
-    # return render_template("table.html", tweets=sorted_result)
+    return jsonify(created_at=created_at_str, current_keyword=current_keyword,
+                   tweet_text=text_wo_url, user=user, favorite_count=favorite_count,
+                   hashtags=hashtags, tweet_id=tweet_id, url=url)
 
-
-"""Provide feedback to user on whether if ticker is valid"""
+##############################################################################
+# Helper functions
 
 if __name__ == "__main__":
 # We have to set debug=True here, since it has to be True at the point

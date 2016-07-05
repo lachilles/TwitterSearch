@@ -5,18 +5,22 @@
 
 <!-- Content here -->
 <p>See what's happening <b>right now</b></p>
-<!-- <form class ="navbar-form" action="/search-results.json/" id="search-box"> -->
-<div id="search-box" class ="navbar-form">
+
+<!-- Search form -->
+<div class ="navbar-form">
+    <form class ="navbar-form" action="/new-search" method="POST" id="search-form">
     <div class="input-group">
         <input type="text" class="form-control" placeholder="Search" name="search-text" id="search-text">
         <div class="input-group-btn">
             <button class="btn btn-default" type="submit" id="search-button"><i class="glyphicon glyphicon-search"></i></button>
         </div>
     </div>
-    <!-- </form> -->
+    </form>
 </div>
 <br>
 <br>
+
+<!-- Search results table -->
 <div class="container-fluid">
     <div id="tweet_data" class="row">
     <table class="table table-striped">
@@ -26,16 +30,12 @@
             <th>Text</th>
             <th>Favorite Count</th>
         </tr>
-        {% if tweets %}
-        {% for tweet in tweets %}
             <tr>
-                <td>{{ tweet.created_at  }}</td>
-                <td>{{ tweet.user }}</td>
-                <td>{{ tweet.text }}</td>
-                <td>{{ tweet.favorite_count }}</td>
+                <td class="created_at"> </td>
+                <td class="user"> </td>
+                <td class="text"> </td>
+                <td class="favorite"> </td>
             </tr>
-        {% endfor %}
-        {% endif %}
         </table>
     </div>
 </div>
