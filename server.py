@@ -32,15 +32,6 @@ def index():
     return render_template("index.html", tweets=[])
 
 
-# @app.route("/trending")
-# def add_trending():
-#     """Add a trending keyword to our database."""
-#     keyword = request.args.get('search').lower()
-#     # add a keyword to our KeywordMap here
-
-#     print "\n\nTRENDING: %s\n\n" % (keyword)
-
-
 @app.route('/search-results.json', methods=["POST"])
 def show_search_results():
     """Search Twitter and return a dictionary of results."""
@@ -52,7 +43,7 @@ def show_search_results():
     print "**********************"
     tweets = get_tweets_by_api(term=current_keyword)
 
-    # result = []
+    result = []
 
     for tweet in tweets:
         # Exclude retweets since they appear as duplicatses to endu ser
@@ -75,7 +66,7 @@ def show_search_results():
                 ht_list = []
                 for hashtag in tweet.hashtags:
                     ht_str = unicodedata.normalize('NFKD', hashtag.text).encode('ascii', 'ignore')
-                    ht_list.append(ht_str)
+                    ht_list.append(ht_str.lower())
                 hashtags = Counter(ht_list)
             else:
                 hashtags = tweet.hashtags
@@ -85,13 +76,15 @@ def show_search_results():
             created_at_str = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(created_at, '%a %b %d %H:%M:%S +0000 %Y'))
             # create a moment from the string
             created_at = moment.date(created_at_str, 'YYYY-MM-DD HH:mm:ss')
-            # result.append({'created_at': created_at_str, 'text': text_wo_url, 'user': user,
-                           # 'favorite_count': favorite_count, 'hashtags': hashtags,
-                           # 'url': url, 'tweet_id': tweet_id})
+            result.append({'created_at': created_at_str, 'text': text_wo_url, 'user': user,
+                           'favorite_count': favorite_count, 'hashtags': hashtags,
+                           'url': url, 'tweet_id': tweet_id})
 
-    return jsonify(created_at=created_at_str, current_keyword=current_keyword,
-                   tweet_text=text_wo_url, user=user, favorite_count=favorite_count,
-                   hashtags=hashtags, tweet_id=tweet_id, url=url)
+    print "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
+    print result
+    print "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
+
+    return jsonify(result=result)
 
 ##############################################################################
 # Helper functions

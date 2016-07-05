@@ -9,17 +9,20 @@ function showSearchResults(result) {  //the result being passed in are the ones 
 
     var keyword = result.current_keyword;
     var createdAt = result.created_at;
-    var text = result.tweet_text;
+    var tweet_text = result.tweet_text;
     var user = result.user;
     var favoriteCount = result.favorite_count;
     var hashtags = result.hashtags;
 
     console.log(result);
+    console.log(keyword);
+    console.log(createdAt);
+    console.log(tweet_text);
     console.log("Made it to showSearchResults");
-    $(".created_at").append(createdAt);
-    $(".user").append(user);
-    $(".text").append(text);
-    $(".favorite").append(favoriteCount);
+    $(".created_at").append(this.createdAt);
+    $(".user").append(this.user);
+    $(".text").append(this.tweet_text);
+    $(".favorite").append(this.favoriteCount);
 }
 
 
