@@ -7,15 +7,16 @@ function showSearchResults(result) {
 
 function submitSearch(evt) {
     evt.preventDefault();
-
     var formInputs = {
-        "search": $("#search-box").val()
+        "search": $("#search-text").val()
     };
+    console.log(formInputs);
 
-    $.post("/search-results.json/",
+    $.get("/search-results.json",
            formInputs,
            showSearchResults
            );
 }
+$("#search-button").on("click", submitSearch);
 
-$("#search-box").on("submit", submitSearch);
+// $("#tweet-data-div").html(result);
