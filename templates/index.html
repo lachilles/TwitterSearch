@@ -28,7 +28,7 @@
         </tr>
         {% for tweet in tweets %}
             <tr>
-                <td>{{ tweet.created_at | safe }}</td>
+                <td>{{ tweet.created_at  }}</td>
                 <td>{{ tweet.user }}</td>
                 <td>{{ tweet.text }}</td>
                 <td>{{ tweet.favorite_count }}</td>
