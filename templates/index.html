@@ -5,7 +5,7 @@
 
 <!-- Content here -->
 <p>See what's happening <b>right now</b></p>
-<form class ="navbar-form cent" action="/search-results.json/" id="search-box">
+<form class ="navbar-form" action="/search-results.json/" id="search-box">
 
         <div class="input-group">
         <input type="text" class="form-control" placeholder="Search" name="search" id="search">
@@ -14,21 +14,31 @@
         </div>
     </div>
     </form>
+<br>
+<br>
 
-  <script src="/static/js/submit-search.js"></script>
-
-<div id="tweet_data">
-<table class="table table-striped">
-{% for tweet in tweets %}
-    <tr>
-        <td>{{ tweet.created_at }}</td>
-        <td>{{ tweet.user.screen_name }}</td>
-        <td>{{ tweet.text }}</td>
-        <td>{{ tweet.favorite_count }}</td>
-    </tr>
-</table>
+<div class="container-fluid">
+    <div id="tweet_data" class="row">
+    <table class="table table-striped">
+        <tr>
+            <th>Created At</th>
+            <th>Screen Name</th>
+            <th>Text</th>
+            <th>Favorite Count</th>
+        </tr>
+        {% for tweet in tweets %}
+            <tr>
+                <td>{{ tweet.created_at | safe }}</td>
+                <td>{{ tweet.user }}</td>
+                <td>{{ tweet.text }}</td>
+                <td>{{ tweet.favorite_count }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
 </div>
 
-{% endfor %}
+<script src="/static/js/submit-search.js"></script>
+
 
 {% endblock %}

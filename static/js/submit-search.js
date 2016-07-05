@@ -18,4 +18,4 @@ function submitSearch(evt) {
            );
 }
 
-$("#search-form").on("submit", submitSearch);
+$("#search-box").on("submit", submitSearch);
