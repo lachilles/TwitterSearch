@@ -7,6 +7,18 @@
 function showSearchResults(result) {  //the result being passed in are the ones I set in my route
     // alert(result);
 
+    $(".created_at").empty();
+    $(".user").empty();
+    $(".text").empty();
+    $(".favorite").empty();
+
+    // Need to figure out how to grab following variables from json
+
+    console.log(result);
+
+    var actualResults = result.result;
+    console.log(actualResults);
+
     var keyword = result.current_keyword;
     var createdAt = result.created_at;
     var tweet_text = result.tweet_text;
@@ -14,7 +26,6 @@ function showSearchResults(result) {  //the result being passed in are the ones 
     var favoriteCount = result.favorite_count;
     var hashtags = result.hashtags;
 
-    console.log(result);
     console.log(keyword);
     console.log(createdAt);
     console.log(tweet_text);
