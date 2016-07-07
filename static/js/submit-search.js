@@ -9,14 +9,11 @@ function showSearchResults(result) {  //the result being passed in are the ones 
     // alert(result);
     console.log("Made it to showSearchResults");
 
-    $(".created_at").empty();
-    $(".user").empty();
-    $(".text").empty();
-    $(".favorite").empty();
-
-    // Need to figure out how to grab following variables from json
-
-    console.log(result);
+    
+    $(".table-striped").empty();
+    $(".list-group").empty();
+   
+    // console.log(result);
 
     var actualResults = result.result;
     console.log(actualResults);
@@ -32,6 +29,8 @@ function showSearchResults(result) {  //the result being passed in are the ones 
 //     var x = arrayItem.prop1 + 2;
 //     alert(x);
 // });
+
+    var allHashtags = {};
     
     actualResults.forEach( function (i)
     {
@@ -42,9 +41,6 @@ function showSearchResults(result) {  //the result being passed in are the ones 
         var hashtags = i.hashtags;
         console.log(hashtags);
 
-        // $(".tweet").append(
-        //     '<td>' + createdAt + '</td>' 
-        //     );
         $(".table-striped").append(
             '<tr><td>' + createdAt + '</td>' +
             '<td>' + user + '</td>' +
@@ -53,10 +49,28 @@ function showSearchResults(result) {  //the result being passed in are the ones 
 
             );
 
-    });
+    // loop through hashtags array and check if key is in allHashtags. If not, 
+    //append key, value
+        hashtags.forEach( function (key, value)
+        {
+            if (allHashtags[key]) {
+                allHashtags[key] += value;
+            } else {
+                allHashtags[key] = value;
+            }
 
+            $(".list-group").append(
+                '<li>' + allHashtags[key] +
+                '<span class="badge">' + allHashtags[value] + '</span></li>'
+
+                );
+
+        });
+    });
 }
 
+// build function showHashtags (using result) to loop over each tweet object
+// and for each
 
 function submitSearch(evt) {
     evt.preventDefault();

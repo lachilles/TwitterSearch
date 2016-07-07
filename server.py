@@ -84,7 +84,7 @@ def show_search_results():
     print result
     print "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
 
-    return jsonify(result=result)
+    return jsonify(result=result)  #, tweets
 
 ##############################################################################
 # Helper functions
