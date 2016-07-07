@@ -1,3 +1,4 @@
+
 "use strict";
 
 // ***************Show search results****************************
@@ -41,56 +42,20 @@ function showSearchResults(result) {  //the result being passed in are the ones 
         var hashtags = i.hashtags;
         console.log(hashtags);
 
-        $(".tweet").append(
-            '<td>' + createdAt + '</td>' +
+        // $(".tweet").append(
+        //     '<td>' + createdAt + '</td>' 
+        //     );
+        $(".table-striped").append(
+            '<tr><td>' + createdAt + '</td>' +
             '<td>' + user + '</td>' +
             '<td>' + tweet_text + '</td>' +
             '<td>' + favoriteCount + '</td></tr>'
+
             );
-        // $(".user").append();
-        // $(".text").append();
-        // $(".favorite").append();
+
     });
-    // var arrayLength = actualResults.length;
-    // for (var i = 0; i < arrayLength; i++) {
-    //     // alert(actualResults[i]);
-    //     //Do something
-    //     var createdAt = actualResults.created_at;
-    //     var tweet_text = actualResults.tweet_text;
-    //     var user = actualResults.user;
-    //     var favoriteCount = actualResults.favorite_count;
-    //     var hashtags = actualResults.hashtags;
-        
-    // //     console.log(createdAt);
-    // //     console.log(tweet_text);
-    // //     console.log(user);
-    // //     console.log(favoriteCount);
-    // //     console.log(hashtags);
 
-    //     $(".created_at").append(this.createdAt);
-    //     $(".user").append(this.user);
-    //     $(".text").append(this.tweet_text);
-    //     $(".favorite").append(this.favoriteCount);
-    // // }
 }
-
-// Output:
-// "obj.a = 1"
-// "obj.b = 2"
-// "obj.c = 3"
-
-    // var keyword = actualResults.prop.current_keyword;
-
-
-//     console.log("keyword: " + keyword);
-//     console.log("createdAt: " + createdAt);
-//     console.log("tweet_text: " + tweet_text);
-//     console.log("Made it to showSearchResults");
-//     $(".created_at").append(this.createdAt);
-//     $(".user").append(this.user);
-//     $(".text").append(this.tweet_text);
-//     $(".favorite").append(this.favoriteCount);
-// }
 
 
 function submitSearch(evt) {
