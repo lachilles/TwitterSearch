@@ -49,23 +49,25 @@ function showSearchResults(result) {  //the result being passed in are the ones 
 
             );
 
-    // loop through hashtags array and check if key is in allHashtags. If not, 
-    //append key, value
-        hashtags.forEach( function (key, value)
-        {
-            if (allHashtags[key]) {
-                allHashtags[key] += value;
-            } else {
-                allHashtags[key] = value;
-            }
+        if (hashtags) {
+            // loop through hashtags array and check if key is in allHashtags. If not, 
+            //append key, value
+            hashtags.forEach( function (key, value)
+            {
+                if (allHashtags[key]) {
+                    allHashtags[key] += value;
+                } else {
+                    allHashtags[key] = value;
+                }
 
-            $(".list-group").append(
-                '<li>' + allHashtags[key] +
-                '<span class="badge">' + allHashtags[value] + '</span></li>'
+                $(".list-group").append(
+                    '<li>' + allHashtags[key] +
+                    '<span class="badge">' + allHashtags[value] + '</span></li>'
 
-                );
+                    );
 
-        });
+            });
+        }
     });
 }
 
