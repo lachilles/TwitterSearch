@@ -41,10 +41,15 @@ function showSearchResults(result) {  //the result being passed in are the ones 
         var hashtags = i.hashtags;
         console.log(hashtags);
 
-        $(".created_at").append(createdAt);
-        $(".user").append(user);
-        $(".text").append(tweet_text);
-        $(".favorite").append(favoriteCount);
+        $(".tweet").append(
+            '<td>' + createdAt + '</td>' +
+            '<td>' + user + '</td>' +
+            '<td>' + tweet_text + '</td>' +
+            '<td>' + favoriteCount + '</td></tr>'
+            );
+        // $(".user").append();
+        // $(".text").append();
+        // $(".favorite").append();
     });
     // var arrayLength = actualResults.length;
     // for (var i = 0; i < arrayLength; i++) {

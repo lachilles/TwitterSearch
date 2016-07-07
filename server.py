@@ -76,7 +76,7 @@ def show_search_results():
             created_at_str = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(created_at, '%a %b %d %H:%M:%S +0000 %Y'))
             # create a moment from the string
             created_at = moment.date(created_at_str, 'YYYY-MM-DD HH:mm:ss')
-            result.append({'created_at': created_at_str, 'text': text_wo_url, 'user': user,
+            result.append({'created_at': created_at_str, 'tweet_text': text_wo_url, 'user': user,
                            'favorite_count': favorite_count, 'hashtags': hashtags,
                            'url': url, 'tweet_id': tweet_id})
 
