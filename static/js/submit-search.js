@@ -39,7 +39,7 @@ function showSearchResults(result) {  //the result being passed in are the ones 
         var user = i.user;
         var favoriteCount = i.favorite_count;
         var hashtags = i.hashtags;
-        console.log(hashtags);
+        // console.log(hashtags);
 
         $(".table-striped").append(
             '<tr><td>' + createdAt + '</td>' +
@@ -49,30 +49,26 @@ function showSearchResults(result) {  //the result being passed in are the ones 
 
             );
 
+        // for(var hashtag in hashtags) {
+        //     console.log(hashtag, hashtags[hashtag]);
+
+        // allHashtags = {};
+
         if (hashtags) {
-            // loop through hashtags array and check if key is in allHashtags. If not, 
-            //append key, value
-            hashtags.forEach( function (key, value)
-            {
-                if (allHashtags[key]) {
-                    allHashtags[key] += value;
-                } else {
-                    allHashtags[key] = value;
-                }
-
+        //     // loop through hashtags array and check if key is in allHashtags. If not, 
+        //     //append key, value
+            for(var hashtag in hashtags) {
                 $(".list-group").append(
-                    '<li>' + allHashtags[key] +
-                    '<span class="badge">' + allHashtags[value] + '</span></li>'
+                    '<li>' + hashtag +
+                    '<span class="badge">' + hashtags[hashtag] + '</span></li>'
 
-                    );
-
-            });
+                );
+   
+            }
         }
     });
 }
 
-// build function showHashtags (using result) to loop over each tweet object
-// and for each
 
 function submitSearch(evt) {
     evt.preventDefault();
