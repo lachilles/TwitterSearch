@@ -24,7 +24,7 @@ def verify_twitter_creds():
 
     # This will print info about credentials to make sure
     # they're correct
-    print api.VerifyCredentials()
+    print(api.VerifyCredentials())
 
 
 def get_tweets_by_api(term='brexit', count=30, since_id=None):

@@ -38,15 +38,15 @@ def show_search_results():
 
     #Get values from search-box via AJAX
     current_keyword = request.form.get('search').lower()
-    print "**********************"
-    print current_keyword
-    print "**********************"
+    print("**********************")
+    print(current_keyword)
+    print("**********************")
     tweets = get_tweets_by_api(term=current_keyword)
 
     result = []
 
     for tweet in tweets:
-        # Exclude retweets since they appear as duplicatses to endu ser
+        # Exclude retweets since they appear as duplicatses to end user
         if tweet.retweeted_status is None:
             # Convert tweet text from unicode to text
             tweet_id = tweet.id
@@ -80,9 +80,9 @@ def show_search_results():
                            'favorite_count': favorite_count, 'hashtags': hashtags,
                            'url': url, 'tweet_id': tweet_id})
 
-    print "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
-    print result
-    print "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
+    print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+    print(result)
+    print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
 
     return jsonify(result=result)  #, tweets
 
